@@ -18,4 +18,5 @@ WHERE (StudentName = 'Hung');
 
 -- 5.Hien thi thong tin va sap xeptheo diem thi, trung nhau thi tang dan
 SELECT S.StudentName, Sub.SubName, M.Mark
-from Student S join 
+FROM student S JOIN mark M ON S.StudentId = M.StudentId JOIN subject Sub ON M.SubId = Sub.SubId	
+ORDER BY Mark DESC;
