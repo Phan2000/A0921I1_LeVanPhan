@@ -107,3 +107,71 @@ WHERE lk.TenLoaiKhach = "Diamond"
 AND kh.DiaChi LIKE '%Vinh'
 OR kh.DiaChi = "%Quảng Ngãi"
 GROUP BY MaDichVuDiKem; 
+
+-- Task 12: Hiển thị thông tin ma_hop_dong, ho_ten (nhân viên), ho_ten (khách hàng), so_dien_thoai (khách hàng)
+-- ten_dich_vu, so_luong_dich_vu_di_kem (được tính dựa trên việc sum so_luong ở dich_vu_di_kem),
+-- tien_dat_coc của tất cả các dịch vụ đã từng được khách hàng đặt vào 3 tháng cuối năm 2020 
+-- nhưng chưa từng được khách hàng đặt vào 6 tháng đầu năm 2021.
+
+SELECT hd.mahopdong, nv.hoten, kh.hoten, kh.sodienthoai, dv.tendichvu, hd.tiendatcoc, sum(soluong) AS so_luong_dich_vu_di_kem 
+FROM nhanvien nv JOIN hopdong hd ON nv.manhanvien = hd.manv
+JOIN khachhang kh ON kh.makhachhang = hd.makh
+JOIN hopdongchitiet hdct ON hdct.mahd = hd.mahopdong
+JOIN dichvu dv ON dv.madichvu = hd.madv
+WHERE (year(hd.ngaylamhopdong) = 2020 AND month(hd.ngaylamhopdong) BETWEEN 10 AND 12)
+GROUP BY mahopdong;
+
+-- Task 13: Hiển thị thông tin các Dịch vụ đi kèm được sử dụng nhiều nhất bởi các Khách hàng đã đặt phòng. 
+-- (Lưu ý là có thể có nhiều dịch vụ có số lần sử dụng nhiều như nhau).
+
+SELECT dvdk.*, sum(hdct.soluong) as so_luong_dich_vu_di_kem
+FROM dichvudikem dvdk JOIN hopdongchitiet hdct
+ON dvdk.madichvudikem = hdct.madvdk
+GROUP BY madichvudikem
+HAVING sum(hdct.soluong) >= ALL(SELECT  sum(hdct.soluong) as so_luong_dich_vu_di_kem
+FROM dichvudikem dvdk JOIN hopdongchitiet hdct
+ON dvdk.madichvudikem = hdct.madvdk
+GROUP BY madichvudikem);
+
+-- Task 14: 
+
+SELECT dvdk.*, count(dvdk.madichvudikem) as so_luong_dich_vu_di_kem
+FROM dichvudikem as dvdk 
+GROUP BY madichvudikem
+HAVING count(dvdk.madichvudikem) <= ALL(
+SELECT count(dvdk.madichvudikem) as so_luong_dich_vu_di_kem
+FROM dichvudikem as dvdk
+GROUP BY madichvudikem);
+
+-- Task 15: Hiển thi thông tin của tất cả nhân viên bao gồm ma_nhan_vien,
+-- ho_ten, ten_trinh_do, ten_bo_phan, so_dien_thoai, dia_chi 
+-- mới chỉ lập được tối đa 3 hợp đồng từ năm 2020 đến 2021.
+
+SELECT nv.manhanvien, hoten, sodienthoai, diachi, td.tentrinhdo, bp.tenbophan
+FROM nhanvien nv JOIN trinhdo td ON nv.matd = td.matrinhdo
+JOIN bophan bp ON bp.mabophan = nv.mabp
+JOIN hopdong hd on hd.manv = nv.manhanvien
+WHERE (hd.ngaylamhopdong BETWEEN "2020-01-01" AND "2021-12-31")
+GROUP BY manhanvien
+HAVING count(hd.mahopdong) <= 3;
+
+-- Task 16: Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2019 đến năm 2021.
+-- Thay SELECT =  DELETE
+SELECT nv.manhanvien, hoten FROM nhanvien nv 
+WHERE nv.manhanvien <> ALL(SELECT hd.manv FROM hopdong hd 
+WHERE year(ngaylamhopdong) BETWEEN 2019 AND 2021);
+
+-- Task 17: Cập nhật thông tin những khách hàng có ten_loai_khach từ Platinum lên Diamond, 
+-- chỉ cập nhật những khách hàng đã từng đặt phòng với Tổng Tiền thanh toán trong năm 2021 là lớn hơn 10.000.000 VNĐ.
+UPDATE khachhang kh
+JOIN hopdong hd ON hd.makh = kh.makhachhang
+JOIN hopdongchitiet hdct ON hdct.mahd = hd.mahopdong
+JOIN dichvu dv ON dv.madichvu = hd.madv
+JOIN dichvudikem dvdk ON dvdk.madichvudikem = hdct.madvdk
+SET kh.malk = 2
+WHERE kh.malk = 1 AND (dv.chiphithue + (hdct.soluong*dvdk.gia)) > 10000000;
+
+-- Task 18: Xóa những khách hàng có hợp đồng trước năm 2021 (chú ý ràng buộc giữa các bảng).
+
+delete from khachhang kh
+where kh.makhachhang in (select makh from hopdong where year(ngaylamhopdong) <= 2021);

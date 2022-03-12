@@ -1,0 +1,89 @@
+* {
+ box-sizing: border-box;
+}
+
+#div_3 {
+ background-color: black;
+ text-align:center;
+ padding:3px;
+ margin-top:7px;
+}
+
+.menu {
+ float: left;
+ width: 20%;
+ text-align: center;
+ height: 340px;
+ background-color: #aaaaaa;
+}
+
+.menu a {
+ background-color: #e5e5e5;
+ padding: 8px;
+ margin-top: 7px;
+ display: block;
+ width: 100%;
+ color: black;
+
+}
+
+.div_2 {
+ height: 333px;
+}
+
+.main {
+ float: left;
+ width: 65%;
+ padding: 0 20px;
+ height: 500px;
+ color: black;
+}
+
+.right {
+ background-color: #e5e5e5;
+ float: left;
+ width: 15%;
+ padding: 15px;
+ margin-top: 7px;
+ text-align: center;
+ height: 333px;
+}
+
+.topnav {
+
+ overflow: hidden; 
+ background-color: black;
+}
+
+
+.topnav a {
+ float: left;
+ display: block;
+ color: #f2f2f2;
+ text-align: center;
+ padding: 14px 16px;
+}
+
+.topnav a:hover {
+ background-color: red;
+}
+
+#menu_1 {
+ margin-left: 0;
+ width: 66.667%;
+ text-align: left;
+}
+#Login {
+  margin-top: 13px;
+  background-color: none;
+  margin-left: 95%;
+  width: 33,333%;
+}
+
+#div_3 p {
+  text-align: center;
+}
+
+button{
+  border-radius: 10px;
+}
