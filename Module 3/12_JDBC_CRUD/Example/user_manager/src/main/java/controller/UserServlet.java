@@ -1,8 +1,8 @@
 package controller;
 
-import dao.IUserDAO;
-import dao.UserDAO;
-import model.User;
+import model.repository.IUserDAO;
+import model.repository.UserDAO;
+import model.bean.User;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
