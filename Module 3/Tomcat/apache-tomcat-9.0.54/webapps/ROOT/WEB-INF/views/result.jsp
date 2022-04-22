@@ -11,7 +11,7 @@
     <title>Result</title>
 </head>
 <body>
-<h1>Kết quả: ${dollar}</h1>
-<a href="/convert">Back to convert form</a>
+<h1>Kết quả: ${result}</h1>
+<a href="/translate">Back to convert form</a>
 </body>
 </html>
